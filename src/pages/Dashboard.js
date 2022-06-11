@@ -1,15 +1,17 @@
 import React,{useEffect} from 'react';
 import { MDBBtn, MDBCol, MDBContainer, MDBRow, MDBTypography, MDBIcon, MDBModalTitle } from 'mdb-react-ui-kit';
 import { useDispatch,useSelector } from 'react-redux';
-import { getContests } from '../redux/feature/contestSlice';
+import { getContests, getUploadedFiles } from '../redux/feature/contestSlice';
 import CardContest from '../components/CardContest';
 import Spinner from '../components/Spinner';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import {toast} from "react-toastify";
 
 const Dashboard = () => {
   const {contests,loading} = useSelector((state)=>({...state.contest}));
   
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(()=>{
     dispatch(getContests());
@@ -19,13 +21,50 @@ const Dashboard = () => {
     return <Spinner />
   }
   console.log(contests);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const profile = JSON.parse(localStorage.getItem('profile'))
+    console.log(profile)
+    let data = [];
+    contests.forEach((contest) => {
+      data.push({
+        title: contest.title,
+        writing: contest.writing,
+        name: `${contest.fname} ${contest.lname}`,
+        creator: contest.creator,
+        tags: contest.tags,
+        imageFile: contest.imageFile,
+        createdAt: new Date()
+      })
+    })
+    dispatch(getUploadedFiles({  
+      filecreator: profile.result.email,
+      filecreatedAt: new Date(),
+      fileImage: "Some Image Url",
+      data: data,
+      navigate,
+      toast
+  }))
+  let x = {  
+    "filecreator": profile.email,
+    "filecreatedAt": new Date(),
+    "fileImage": "Some Image Url",
+    "data": data,
+    navigate,
+    toast
+}
+  console.log(x)
+    console.log(contests)
+  }
   
   return (
     <div style={{margin:'auto',padding:'15px',maxWidth:'10000px',alignContent:'center'}}>
       <MDBRow className='mt-5 pt-4'>
         <MDBContainer className='mt-2' style={{textAlign: 'center'}}>
           <Link to='/finalsubmit'>
-            <MDBBtn>Submit</MDBBtn>
+            <MDBBtn onClick={handleSubmit}>Submit</MDBBtn>
           </Link>
         </MDBContainer>
       </MDBRow>

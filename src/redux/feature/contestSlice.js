@@ -73,6 +73,18 @@ export const updateContest = createAsyncThunk('contest/updateContest',
     }
 });
 
+export const getUploadedFiles = createAsyncThunk('contest/getUploadedFiles',
+    async({ uploadedContData,navigate,toast},{ rejectWithValue })=>{
+    try {
+        const response = await api.getUploadedFiles(uploadedContData);
+        toast.success('Content added Successfully');
+        navigate('/');
+        return response.data;
+    } catch (error) {
+        return rejectWithValue(error.response.data);
+    }
+});
+
 
 const contestSlice = createSlice({
     name:"contest",
@@ -93,6 +105,17 @@ const contestSlice = createSlice({
             state.contests = [action.payload];
         },
         [createContest.rejected]:(state,action)=>{
+            state.loading=false;
+            state.error=action.payload.message;
+        },
+        [getUploadedFiles.pending]:(state,action) => {
+            state.loading = true;
+        },
+        [getUploadedFiles.fulfilled]:(state,action)=>{
+            state.loading=false;
+            state.contests = [action.payload];
+        },
+        [getUploadedFiles.rejected]:(state,action)=>{
             state.loading=false;
             state.error=action.payload.message;
         },

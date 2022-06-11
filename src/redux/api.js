@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API = axios.create({baseURL:"http://localhost:5000"});
+const API = axios.create({baseURL:"http://localhost:9000"});
 
 API.interceptors.request.use((req)=>{
     if(localStorage.getItem("profile")){
@@ -21,4 +21,5 @@ export const getContests = () => API.get("/contest");
 export const getContest = (id) => API.get(`/contest/${id}`);
 export const deleteContest = (id) => API.delete(`/contest/${id}`);
 export const updateContest = (updatedContData,id) => API.patch(`/contest/${id}`,updatedContData);
-export const getContestsByUser = (userId) => API.get(`/contest/userContests/${userId}`); //id== user id
+export const getContestsByUser = (userId) => API.get(`/contest/userContests/${userId}`); //id== user 
+export const getUploadedFiles = (filesData) => API.post("/contest/uploadFiles", filesData);
