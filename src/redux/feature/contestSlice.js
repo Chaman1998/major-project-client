@@ -36,6 +36,16 @@ export const getContest = createAsyncThunk('contest/getContest',
     }
 });
 
+export const getUploadedFiles = createAsyncThunk('users/getFiles',
+    async(_,{rejectWithValue})=>{
+    try {
+        const response = await api.getUploadedFiles();
+        return response.data;
+    } catch (error) {
+        return rejectWithValue(error.response.data);
+    }
+});
+
 // ================Get only user contents=================
 export const getContestsByUser = createAsyncThunk('contest/getContestsByUser',
     async(userId,{rejectWithValue})=>{
@@ -59,6 +69,16 @@ export const deleteContest = createAsyncThunk('contest/deleteContest',
         return rejectWithValue(error.response.data);
     }
 });
+export const deleteContests = createAsyncThunk('users/deleteContests',
+    async({ toast },{rejectWithValue})=>{
+    try {
+        const response = await api.deleteContests();
+        toast.success("contest deleted successfully");
+        return response.data;
+    } catch (error) {
+        return rejectWithValue(error.response.data);
+    }
+});
 
 // ================Get only user update Contents=================
 export const updateContest = createAsyncThunk('contest/updateContest',
@@ -73,10 +93,10 @@ export const updateContest = createAsyncThunk('contest/updateContest',
     }
 });
 
-export const getUploadedFiles = createAsyncThunk('contest/getUploadedFiles',
-    async({ uploadedContData,navigate,toast},{ rejectWithValue })=>{
+export const postUploadedFiles = createAsyncThunk('contest/uploadFiles',
+    async({ filecreator, filecreatedAt, fileImage, data,navigate,toast},{ rejectWithValue })=>{
     try {
-        const response = await api.getUploadedFiles(uploadedContData);
+        const response = await api.postUploadedFiles({ filecreator, filecreatedAt, fileImage, data });
         toast.success('Content added Successfully');
         navigate('/');
         return response.data;
@@ -91,6 +111,7 @@ const contestSlice = createSlice({
     initialState:{
         contest:{},
         contests:[],
+        files: [],
         userContests:[],
         error:"",
         loading:false,
@@ -108,14 +129,14 @@ const contestSlice = createSlice({
             state.loading=false;
             state.error=action.payload.message;
         },
-        [getUploadedFiles.pending]:(state,action) => {
+        [postUploadedFiles.pending]:(state,action) => {
             state.loading = true;
         },
-        [getUploadedFiles.fulfilled]:(state,action)=>{
+        [postUploadedFiles.fulfilled]:(state,action)=>{
             state.loading=false;
             state.contests = [action.payload];
         },
-        [getUploadedFiles.rejected]:(state,action)=>{
+        [postUploadedFiles.rejected]:(state,action)=>{
             state.loading=false;
             state.error=action.payload.message;
         },
@@ -140,6 +161,17 @@ const contestSlice = createSlice({
             state.contest = action.payload;
         },
         [getContest.rejected]:(state,action)=>{
+            state.loading=false;
+            state.error=action.payload.message;
+        },
+        [getUploadedFiles.pending]:(state,action)=>{
+            state.loading = true;
+        },
+        [getUploadedFiles.fulfilled]:(state,action)=>{
+            state.loading=false;
+            state.files = action.payload;
+        },
+        [getUploadedFiles.rejected]:(state,action)=>{
             state.loading=false;
             state.error=action.payload.message;
         },
@@ -169,6 +201,16 @@ const contestSlice = createSlice({
             }
         },
         [deleteContest.rejected]:(state,action)=>{
+            state.loading=false;
+            state.error=action.payload.message;
+        },
+        [deleteContests.pending]:(state,action)=>{
+            state.loading = true;
+        },
+        [deleteContests.fulfilled]:(state,action)=>{
+            state.loading=false;
+        },
+        [deleteContests.rejected]:(state,action)=>{
             state.loading=false;
             state.error=action.payload.message;
         },

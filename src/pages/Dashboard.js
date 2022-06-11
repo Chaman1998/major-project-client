@@ -1,7 +1,7 @@
 import React,{useEffect} from 'react';
 import { MDBBtn, MDBCol, MDBContainer, MDBRow, MDBTypography, MDBIcon, MDBModalTitle } from 'mdb-react-ui-kit';
 import { useDispatch,useSelector } from 'react-redux';
-import { getContests, getUploadedFiles } from '../redux/feature/contestSlice';
+import { deleteContests, getContests, postUploadedFiles } from '../redux/feature/contestSlice';
 import CardContest from '../components/CardContest';
 import Spinner from '../components/Spinner';
 import { Link, useNavigate } from 'react-router-dom';
@@ -26,8 +26,9 @@ const Dashboard = () => {
     e.preventDefault();
 
     const profile = JSON.parse(localStorage.getItem('profile'))
-    console.log(profile)
+
     let data = [];
+
     contests.forEach((contest) => {
       data.push({
         title: contest.title,
@@ -39,7 +40,8 @@ const Dashboard = () => {
         createdAt: new Date()
       })
     })
-    dispatch(getUploadedFiles({  
+
+    dispatch(postUploadedFiles({  
       filecreator: profile.result.email,
       filecreatedAt: new Date(),
       fileImage: "Some Image Url",
@@ -47,16 +49,10 @@ const Dashboard = () => {
       navigate,
       toast
   }))
-  let x = {  
-    "filecreator": profile.email,
-    "filecreatedAt": new Date(),
-    "fileImage": "Some Image Url",
-    "data": data,
-    navigate,
-    toast
-}
-  console.log(x)
-    console.log(contests)
+
+ // dispatch(deleteContests())
+
+    
   }
   
   return (

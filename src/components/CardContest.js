@@ -5,7 +5,7 @@ import { deleteContest } from '../redux/feature/contestSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import {toast} from "react-toastify";
 
-const Cardcontest = ({imageFile,writing ,title, tags,_id,fname,lname}) => {
+const Cardcontest = ({ imageFile, writing , title, tags, _id, fname, lname }) => {
     const dispatch = useDispatch();
     const excerpt = (str) =>{
         if(str.length>45){

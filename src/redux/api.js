@@ -22,4 +22,6 @@ export const getContest = (id) => API.get(`/contest/${id}`);
 export const deleteContest = (id) => API.delete(`/contest/${id}`);
 export const updateContest = (updatedContData,id) => API.patch(`/contest/${id}`,updatedContData);
 export const getContestsByUser = (userId) => API.get(`/contest/userContests/${userId}`); //id== user 
-export const getUploadedFiles = (filesData) => API.post("/contest/uploadFiles", filesData);
+export const postUploadedFiles = (filesData) =>  API.post("/contest/uploadFiles", filesData);
+export const getUploadedFiles = () =>  API.get("/users/getFiles");
+export const deleteContests = () =>  API.delete("/users/deleteContests");
